@@ -8,20 +8,22 @@ public class PlayerController : MonoBehaviour
     public float AirSpeed = 3f;
     public float GravityForce = -9.81f;
     public float JumpForce = 10f;
+    public float CameraSensitivity = 25f;
     public bool Grounded = false;
 
     public Vector3 PlayerInput = Vector3.zero;
     public Vector3 Velocity = Vector3.zero;
 
     public CharacterController Controller;
+    public Camera PlayerCamera;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         Controller = GetComponent<CharacterController>();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Grounded = Controller.isGrounded;
@@ -45,5 +47,16 @@ public class PlayerController : MonoBehaviour
         // Apply Gravity Acceleration & Move
         Velocity.y += GravityForce * Time.deltaTime;
         Controller.Move(Velocity * Time.deltaTime);
+    }
+
+    private void LateUpdate()
+    {
+        // Mouse: Rotate for Turning, Look Up & Down with Camera
+        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * CameraSensitivity * Time.deltaTime);
+
+        float xRotation = Input.GetAxis("Mouse Y") * CameraSensitivity * Time.deltaTime * -1f;
+        PlayerCamera.transform.Rotate(Vector3.right * xRotation);
+
+
     }
 }
